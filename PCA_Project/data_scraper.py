@@ -17,10 +17,6 @@ url_plastic_surgery = "https://www.plasticsurgery.org/photo-gallery/procedure/rh
 url_gallery_of_cosmetic = "https://galleryofcosmeticsurgery.com/gallery-category/dr-sadati/nose/female-rhinoplasty/"
 
 
-# modify data loader to collect data based on before and after, sift based on
-# "before and after"
-
-
 def split_images(input_folder, output_folder):
    if not os.path.exists(output_folder):
        os.makedirs(output_folder)
@@ -52,7 +48,8 @@ def split_images(input_folder, output_folder):
               
 
 
-def scrape_with_selenium(url, output_folder, page):
+def scrape_with_selenium(output_folder, 
+                         url = "https://galleryofcosmeticsurgery.com/gallery-category/dr-sadati/nose/female-rhinoplasty/"):
    if not os.path.exists(output_folder):
        os.makedirs(output_folder)
 
@@ -73,7 +70,7 @@ def scrape_with_selenium(url, output_folder, page):
        if img_url and img_url.startswith('http'):
            try:
                img_data = requests.get(img_url, headers={"User-Agent": "Mozilla/5.0"}).content
-               img_filename = os.path.join(output_folder, f'image_{page}_{index+1}.jpg')
+               img_filename = os.path.join(output_folder, f'image_{index+1}.jpg')
                with open(img_filename, 'wb') as img_file:
                    img_file.write(img_data)
                print(f"Saved image: {img_filename}")
@@ -150,10 +147,11 @@ def scrape_before_after(url, before_folder, after_folder, page):
 
 
 
-def scrape_all_before_after(max_pics, page_indx, before, after):
+def scrape_all_before_after(max_pics, page_indx, before, after, 
+                            url = "https://www.plasticsurgery.org/photo-gallery/procedure/rhinoplasty/page/"):
    # similar to scrape all general, but will create and bucket images based on before and after
    while page_indx < 15:
-       curr_curl = f"https://www.plasticsurgery.org/photo-gallery/procedure/rhinoplasty/page/{page_indx}"
+       curr_curl = f"{url}{page_indx}"
        scrape_before_after(curr_curl, before, after, page_indx)
        page_indx += 1
        max_pics -= 1
@@ -164,10 +162,11 @@ def scrape_all_before_after(max_pics, page_indx, before, after):
 
 
 
-def scrape_all_general(max_pics, page_indx, folder):
+def scrape_all_general(max_pics, page_indx, folder,
+                       url = "https://www.plasticsurgery.org/photo-gallery/procedure/rhinoplasty/page/"):
    # scrape from the whole website, disregarding before and after alt-tags.
    while page_indx > 0:
-       curr_url = url_rest = f"https://www.plasticsurgery.org/photo-gallery/procedure/rhinoplasty/page/{page_indx}"
+       curr_url = f"{url}{page_indx}"
        scrape_general(curr_url, folder, page_indx)
        page_indx += 1
        max_pics -=1
@@ -221,7 +220,6 @@ def generate_outlines(save_folder, images):
 def cleanup(folder):
    # for some reason the images before folder has some garbage files in there
    # so this clean up file will ger rid of non jpg files
-
 
    for file in os.listdir(folder):
        file_path = os.path.join(folder, file)
