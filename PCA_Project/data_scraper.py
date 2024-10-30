@@ -18,34 +18,34 @@ url_gallery_of_cosmetic = "https://galleryofcosmeticsurgery.com/gallery-category
 
 
 def split_images(input_folder, output_folder):
-   if not os.path.exists(output_folder):
-       os.makedirs(output_folder)
-  
-   for filename in os.listdir(input_folder):
-       if filename.endswith('.jpg') or filename.endswith('.png'):
-           try:
-               image_path = os.path.join(input_folder, filename)
-               image = Image.open(image_path)
+    before_folder = os.path.join(output_folder, "gallery_of_cosmetics_before")
+    after_folder = os.path.join(output_folder, "gallery_of_cosmetics_after")
 
+    if not os.path.exists(before_folder):
+        os.makedirs(before_folder)
+    if not os.path.exists(after_folder):
+        os.makedirs(after_folder)
 
-               width, height = image.size
-               midpoint = width // 2
-              
-               before_image = image.crop((0, 0, midpoint, height))
-               after_image = image.crop((midpoint, 0, width, height))
+    for filename in os.listdir(input_folder):
+        if filename.endswith('.jpg') or filename.endswith('.png'):
+            try:
+                image_path = os.path.join(input_folder, filename)
+                image = Image.open(image_path)
 
+                width, height = image.size
+                midpoint = width // 2
 
-               before_filename = f"{os.path.splitext(filename)[0]}_before.jpg"
-               after_filename = f"{os.path.splitext(filename)[0]}_after.jpg"
+                before_image = image.crop((0, 0, midpoint, height))
+                after_image = image.crop((midpoint, 0, width, height))
 
+                before_filename = f"{os.path.splitext(filename)[0]}_before.jpg"
+                after_filename = f"{os.path.splitext(filename)[0]}_after.jpg"
 
-               before_image.save(os.path.join(output_folder, before_filename))
-               after_image.save(os.path.join(output_folder, after_filename))
+                before_image.save(os.path.join(before_folder, before_filename))
+                after_image.save(os.path.join(after_folder, after_filename))
 
-
-           except Exception as e:
-               print(f"ran into issue {e} while parsing file {filename}")
-              
+            except Exception as e:
+                print(f"Ran into issue {e} while parsing file {filename}")   
 
 
 def scrape_with_selenium(output_folder, 
