@@ -6,7 +6,7 @@ from torchvision import transforms
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from sklearn.cluster import KMeans
 import shutil
-
+    
 class FaceClusterer:
     def __init__(self, n_clusters=2):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -95,6 +95,6 @@ class FaceClusterer:
 if __name__ == "__main__":
     clusterer = FaceClusterer(n_clusters=2)
     clusterer.cluster_images(
-        input_dir="data",
-        output_dir="clusters"
+        input_dir="G:\Kanhai\Before_After_Clustering_dataset",
+        output_dir="clusters_before_after"
     )
